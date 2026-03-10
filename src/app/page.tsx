@@ -25,7 +25,7 @@ export default function Home() {
 
       if (response.ok) {
         setSummaryData(data.summary || []);
-        setStatusMessage("Scan complete! Data consolidated to Google Drive.");
+        setStatusMessage("COMPLETE");
       } else {
         setStatusMessage(`Error: ${data.message || "Failed to parse files"}`);
       }
@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <main className="dashboard-container">
       <div className="header">
-        <h1>Monthly Expenditures Dash</h1>
+        <h1>Monthly Expenditures Dashboard</h1>
         <p>Sync your Wealthsimple statements and aggregate data</p>
       </div>
 
@@ -97,7 +97,18 @@ export default function Home() {
 
       {statusMessage && !isScanning && (
         <p className="status-message" style={{ marginTop: '2rem', color: statusMessage.includes('Error') ? 'var(--btn-red)' : 'var(--text-main)' }}>
-          {statusMessage}
+          {statusMessage === 'COMPLETE' ? (
+            <a 
+              href="https://docs.google.com/spreadsheets/d/16_iqdL2OzK06aj374OsFGzFmMytQthNRL5tdqQWymEM/edit?usp=sharing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ color: 'var(--accent-color)', textDecoration: 'underline' }}
+            >
+              Monthly Expenditures Summary
+            </a>
+          ) : (
+            statusMessage
+          )}
         </p>
       )}
     </main>

@@ -109,6 +109,12 @@ export async function POST() {
         const amount = cleanNumber(amountStr);
         const balance = cleanNumber(balanceStr);
         const dateObj = new Date(dateRaw);
+        
+        // Format date as DD-MMM-YYYY (e.g. 10-Mar-2026)
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = dateObj.toLocaleString('en-US', { month: 'short' });
+        const year = dateObj.getFullYear();
+        const formattedDate = `${day}-${month}-${year}`;
 
         // Fill Data
         let transaction = "";
@@ -124,7 +130,7 @@ export async function POST() {
 
         allRows.push({
           dateObj,
-          Date: dateRaw,
+          Date: formattedDate,
           Description: description || "",
           Amount: amount,
           Balance: balance,
@@ -216,6 +222,36 @@ export async function POST() {
       balance: summaryMap[key].endingBalance,
       notes: ""
     }));
+
+    // 8. Output summary data to the second sheet
+    const summarySpreadsheetId = "16_iqdL2OzK06aj374OsFGzFmMytQthNRL5tdqQWymEM";
+    const summarySheetData: any[][] = [
+      ["Month", "Deposits", "Expenditures", "Balance", "Notes"]
+    ];
+
+    summaryResult.forEach(row => {
+      summarySheetData.push([
+        row.month,
+        row.deposits,
+        row.expenditures,
+        row.balance,
+        row.notes
+      ]);
+    });
+
+    await sheets.spreadsheets.values.clear({
+      spreadsheetId: summarySpreadsheetId,
+      range: 'Sheet1',
+    });
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: summarySpreadsheetId,
+      range: 'Sheet1!A1',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: summarySheetData,
+      },
+    });
 
     return NextResponse.json({ 
       success: true, 
