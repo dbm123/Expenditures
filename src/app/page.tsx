@@ -4,9 +4,7 @@ import { useState } from "react";
 
 type MonthlySummary = {
   month: string;
-  deposits: number;
   expenditures: number;
-  balance: number;
   notes: string;
 };
 
@@ -69,9 +67,7 @@ export default function Home() {
               <thead>
                 <tr>
                   <th>Month</th>
-                  <th>Deposits</th>
                   <th>Expenditures</th>
-                  <th>Balance</th>
                   <th>Notes</th>
                 </tr>
               </thead>
@@ -79,9 +75,7 @@ export default function Home() {
                 {summaryData.map((row, index) => (
                   <tr key={index}>
                     <td>{row.month}</td>
-                    <td>${row.deposits.toFixed(2)}</td>
                     <td>${row.expenditures.toFixed(2)}</td>
-                    <td>${row.balance.toFixed(2)}</td>
                     <td>{row.notes}</td>
                   </tr>
                 ))}

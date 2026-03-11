@@ -1,0 +1,27 @@
+To give you a high-level summary, we are building and refining a **Next.js web application** that completely automates your budgeting workflow by syncing Wealthsimple statements from your Google Drive directly into Google Sheets.
+
+Here is exactly what the app (and the code we just wrote) does step-by-step:
+
+### 1. The Dashboard (`http://localhost:3000`)
+You have a local web dashboard running right now. When you click the **"Scan"** button on this dashboard, it triggers a backend API to do the heavy lifting.
+
+### 2. Reading and Assembling Data
+* The app securely logs into your Google Drive and finds a specific folder containing all of your exported Wealthsimple `.csv` files.
+* It downloads all the CSV data and combines them into one massive, chronological list of transactions. 
+
+### 3. Smart Filtering ([Exclusions.txt](cci:7://file:///c:/Users/DBM/Documents/Projects/Expenditures/Exclusions.txt:0:0-0:0))
+Before doing any math, the code cleans up the data:
+* **Exclusions File:** It reads the [Exclusions.txt](cci:7://file:///c:/Users/DBM/Documents/Projects/Expenditures/Exclusions.txt:0:0-0:0) file you created in the project folder. If any row contains phrases like `"Online Transfer Out"` or `"Withdrawal"`, the app completely skips that transaction.
+* **Expenditures Only:** It filters out all positive amounts (like paychecks, deposits, or refunds) and only keeps negative amounts, so you are exclusively looking at money going *out*.
+
+### 4. Updating and Formatting Google Sheets
+Finally, it takes all this cleaned-up data and automatically writes it into three separate Google Spreadsheets, applying custom formatting along the way:
+
+1. **Monthly Expenditures Unprocessed (Sheet 1):** 
+   A giant, combined list of every single valid expenditure. The app automatically bolds the headers and freezes the top row so the labels stay pinned to the top as you scroll.
+2. **Monthly Expenditures Summary (Sheet 2):** 
+   A high-level dashboard showing total expenditures grouped by month. We just updated the code so the app **only writes to Columns A and B**—meaning any extra data, notes, or graphs you manually add to Column C and beyond will permanently be preserved and never get deleted during a scan.
+3. **Account Breakdown (Sheet 3):** 
+   A breakdown of your opening/closing balances and expenditures grouped by month and by account name. The app automatically paints alternating blocks of accounts in light blue, and highlights the "Total Expenditure" row for each month in light red to make it easy to read.
+
+In a nutshell: We just built an automated reporting pipeline that does all your data entry, filtering, math, and spreadsheet formatting with the click of a single button!
